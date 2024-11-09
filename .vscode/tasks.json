@@ -1,0 +1,26 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+	  {
+		"label": "build",
+		"type": "shell",
+		"command": "g++",
+		"args": [
+		  "-g",
+		  "-I", "${workspaceFolder}/include",           // Include path for headers
+		  "${workspaceFolder}/src/main.cpp",            // Path to main.cpp
+		  "${workspaceFolder}/src/ConfigManager.cpp",   // Path to ConfigManager.cpp
+		  "${workspaceFolder}/src/Logger.cpp",			// Path to Logger.cpp
+		  "-o",
+		  "${workspaceFolder}/src/main.exe"             // Output executable
+		],
+		"group": {
+		  "kind": "build",
+		  "isDefault": true
+		},
+		"problemMatcher": ["$gcc"],
+		"detail": "Generated task for building C++ files using g++"
+	  }
+	]
+  }
+  
