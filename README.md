@@ -1,1 +1,2 @@
-# TEST
+# Activating venv
+`venv/Scripts/activate`
