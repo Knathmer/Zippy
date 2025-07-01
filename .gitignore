@@ -11,5 +11,7 @@ pyvenv.cfg
 .venv
 pip-selfcheck.json
 
-# Other
+#other
+zippy.egg-info
+zippy/__pycache__
 
