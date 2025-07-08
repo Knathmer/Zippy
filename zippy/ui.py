@@ -10,17 +10,40 @@ from .extractor import extract
 import os
 
 isModified = False
+# Helper Functions
 
-def get_folder(data, key):
-    global isModified #  Refer to the global variable
-    root = tk.Tk()
-    root.withdraw()  # hide the root window
-    path = filedialog.askdirectory()  # show folder picker
-    if path:
-        # store selected path and persist
+def setPath(data, key, path):
+    global isModified
+    if key in data and data[key] != path:
         data[key] = path
         isModified = True
 
+# Callback Functions
+
+def get_folder(data, key):
+    global isModified
+    root = tk.Tk()
+    root.withdraw()
+    path = filedialog.askdirectory(
+        initialdir=os.path.expanduser('~'),
+        title=f"Select Folder for {key.replace('_', ' ').title()}",
+        mustexist=True
+    )
+    if path:
+        setPath(data, key, path)
+
+
+def get_file(data, key="current_file"):
+    global isModified
+    root = tk.Tk()
+    root.withdraw()
+    path = filedialog.askopenfilename(
+        initialdir=os.path.expanduser('~'),
+        title=f"Select File to Extract",
+        filetypes=[("RAR files", "*.rar"), ("All files", "*.*")]
+    )
+    if path:
+        setPath(data, key, path)
 
 
 def close_zippy(icon, _, data):
@@ -29,6 +52,8 @@ def close_zippy(icon, _, data):
         save(data)
     icon.stop()
 
+
+# Functions
 
 def create_tray():
     # File locations are loaded from settings.json from a previous session
@@ -46,21 +71,26 @@ def create_tray():
     # Build submenu items for "File Locations"
     loc_items = []
 
-    def on_click(icon, menu_item, folder_key): # Callback function for folder selection
-        get_folder(data, folder_key)
+    def on_click_select(icon, menu_item, f_key, getfolder=False):
+        if getfolder:
+            get_folder(data, f_key)
+        else:
+            get_file(data, f_key)
 
     for i in range(1, 6):
         key = f"folder_path_{i}"
         label = f"Location {i}"
-        handler = partial(on_click, folder_key=key)
+        handler = partial(on_click_select, f_key=key, getfolder=True)
         loc_items.append(item(label, handler))
 
     close_handler = partial(close_zippy, data=data)  # Handler for Exit option
+    select_file_handler = partial(on_click_select, f_key='current_file')  # Handler for Extract File option
 
     # Define the main tray menu structure
     tray_menu = Menu(
         item("Exit", close_handler),  # top-level Exit option
         item("File Locations", Menu(*loc_items)),  # nested submenu
+        item("Extract File", select_file_handler)  # Extract File option
     )
 
     # Create and return the Icon object with title, image, and menu
