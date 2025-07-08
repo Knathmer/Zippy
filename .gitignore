@@ -15,4 +15,5 @@ pip-selfcheck.json
 zippy.egg-info
 zippy/__pycache__
 .pytest_cache
-
+.idea
+ToDo.md

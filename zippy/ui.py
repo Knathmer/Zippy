@@ -1,6 +1,4 @@
 # zippy/ui.py
-# This module handles creation of the system tray icon and its menu
-
 
 from pystray import Icon, MenuItem as item, Menu
 from PIL import Image
@@ -11,19 +9,24 @@ from .config import load, save
 from .extractor import extract
 import os
 
+isModified = False
 
 def get_folder(data, key):
+    global isModified #  Refer to the global variable
     root = tk.Tk()
     root.withdraw()  # hide the root window
     path = filedialog.askdirectory()  # show folder picker
     if path:
         # store selected path and persist
         data[key] = path
-        print(f"Here is the data that is being saved: {data}")
+        isModified = True
+
+
+
+def close_zippy(icon, _, data):
+    if isModified:
+        print(f"We made some changes to the file locations, saving them now.")
         save(data)
-
-
-def close_zippy(icon, _):
     icon.stop()
 
 
@@ -49,12 +52,14 @@ def create_tray():
     for i in range(1, 6):
         key = f"folder_path_{i}"
         label = f"Location {i}"
-        handler = partial(on_click, folder_key=key) #  partial presets the folder_key in a special function
+        handler = partial(on_click, folder_key=key)
         loc_items.append(item(label, handler))
+
+    close_handler = partial(close_zippy, data=data)  # Handler for Exit option
 
     # Define the main tray menu structure
     tray_menu = Menu(
-        item("Exit", close_zippy),  # top-level Exit option
+        item("Exit", close_handler),  # top-level Exit option
         item("File Locations", Menu(*loc_items)),  # nested submenu
     )
 
