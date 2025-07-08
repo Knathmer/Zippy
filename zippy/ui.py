@@ -13,10 +13,12 @@ isModified = False
 # Helper Functions
 
 def setPath(data, key, path):
-    global isModified
-    if key in data and data[key] != path:
-        data[key] = path
-        isModified = True
+            global isModified
+            if key not in data:
+                raise KeyError(f"Key `{key}` not found in data.")
+            if data[key] != path:
+                data[key] = path
+                isModified = True
 
 # Callback Functions
 
