@@ -2,7 +2,7 @@
 import json
 from pathlib import Path
 
-SETTINGS_FILE = Path(__file__).parent.parent / "settings.json"
+SETTINGS_FILE = Path(__file__).parent.parent / "settings.json"  # Finds settings file
 
 def load():
     with open(SETTINGS_FILE, "r") as f:

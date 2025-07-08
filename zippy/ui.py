@@ -1,47 +1,40 @@
 # zippy/ui.py
 # This module handles creation of the system tray icon and its menu
 
-from pystray import Icon, MenuItem as item, Menu  # pystray provides cross-platform tray support
-from PIL import Image  # PIL is used to load the tray icon image
-from .config import load, save  # config helpers to read/write settings.json
-from .extractor import extract  # extraction logic for archives
-import os
+
+from pystray import Icon, MenuItem as item, Menu
+from PIL import Image
 import tkinter as tk  # tkinter for folder selection dialog
 from tkinter import filedialog
+from functools import partial
+from .config import load, save
+from .extractor import extract
+import os
 
 
 def get_folder(data, key):
-    """
-    Open a folder selection dialog, update the 'data' dict under 'key',
-    and save the updated settings to disk.
-    """
     root = tk.Tk()
     root.withdraw()  # hide the root window
     path = filedialog.askdirectory()  # show folder picker
     if path:
         # store selected path and persist
         data[key] = path
+        print(f"Here is the data that is being saved: {data}")
         save(data)
 
 
 def close_zippy(icon, _):
-    """
-    Stop the tray icon event loop, effectively closing the app.
-    """
     icon.stop()
 
 
 def create_tray():
-    """
-    Build and return a configured pystray.Icon instance.
-    """
-    # Load user settings (e.g., stored folder paths)
+    # File locations are loaded from settings.json from a previous session
     data = load()
 
-    # Determine the absolute path to the tray icon image
+    # icon_path set to location of the icon image
     icon_path = os.path.join(
-        os.path.dirname(__file__),  # this file's directory
-        "..",                     # parent project folder
+        os.path.dirname(__file__),
+        "..",                     
         "icons",
         "zippy.png"
     )
@@ -49,14 +42,15 @@ def create_tray():
 
     # Build submenu items for "File Locations"
     loc_items = []
+
+    def on_click(icon, menu_item, folder_key): # Callback function for folder selection
+        get_folder(data, folder_key)
+
     for i in range(1, 6):
         key = f"folder_path_{i}"
-        # Use a factory to capture the loop variable correctly
-        def make_action(k):
-            # Each action must accept (icon, menu_item)
-            return lambda icon, item: get_folder(data, k)
-        # Create a menu item labeled "Location {i}" with its callback
-        loc_items.append(item(f"Location {i}", make_action(key)))
+        label = f"Location {i}"
+        handler = partial(on_click, folder_key=key) #  partial presets the folder_key in a special function
+        loc_items.append(item(label, handler))
 
     # Define the main tray menu structure
     tray_menu = Menu(
