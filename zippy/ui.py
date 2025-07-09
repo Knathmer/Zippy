@@ -12,7 +12,7 @@ import os
 isModified = False
 # Helper Functions
 
-def setPath(data, key, path):
+def setpath(data, key, path):
             global isModified
             if key not in data:
                 raise KeyError(f"Key `{key}` not found in data.")
@@ -31,8 +31,8 @@ def get_folder(data, key):
         title=f"Select Folder for {key.replace('_', ' ').title()}",
         mustexist=True
     )
-    if path:
-        setPath(data, key, path)
+    if data[key] != path and path != "":
+        setpath(data, key, path)
 
 
 def get_file(data, key="current_file"):
@@ -44,13 +44,11 @@ def get_file(data, key="current_file"):
         title=f"Select File to Extract",
         filetypes=[("RAR files", "*.rar"), ("All files", "*.*")]
     )
-    if path:
-        setPath(data, key, path)
-
+    if data[key] != path and path != "":
+        setpath(data, key, path)
 
 def close_zippy(icon, _, data):
     if isModified:
-        print(f"We made some changes to the file locations, saving them now.")
         save(data)
     icon.stop()
 

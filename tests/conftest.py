@@ -1,7 +1,7 @@
 import pytest
 import zippy.ui as ui
 
-@pytest.fixture(autouse=True)
+@pytest.fixture(autouse=False)
 def reset_is_modified():
     """Fixture to reset the isModified flag before each test."""
     print("Resetting `isModified` flag before test.")
