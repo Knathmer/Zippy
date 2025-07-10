@@ -7,6 +7,7 @@ import time
 def test_main():
 
     icon = None
+
     def run_icon():
         nonlocal icon
         icon = zippy.main.main(run_in_thread=True)
