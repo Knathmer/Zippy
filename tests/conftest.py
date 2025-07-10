@@ -1,3 +1,4 @@
+# tests/conftest.py
 import pytest
 import zippy.ui as ui
 

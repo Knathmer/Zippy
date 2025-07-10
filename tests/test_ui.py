@@ -1,3 +1,4 @@
+# tests/test_ui.py
 import pytest
 import zippy.ui as ui
 from PIL import Image

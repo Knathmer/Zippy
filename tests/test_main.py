@@ -1,3 +1,4 @@
+# tests/test_main.py
 import pytest
 import zippy.main
 from zippy.ui import close_zippy
