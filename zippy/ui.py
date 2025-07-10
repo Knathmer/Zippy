@@ -58,7 +58,7 @@ def close_zippy(icon, _, data):
 def create_tray():
     # File locations are loaded from settings.json from a previous session
     data = load()
-
+    number_of_locations = 6
     # icon_path set to location of the icon image
     icon_path = os.path.join(
         os.path.dirname(__file__),
@@ -77,7 +77,7 @@ def create_tray():
         else:
             get_file(data, f_key)
 
-    for i in range(1, 6):
+    for i in range(1, number_of_locations):
         key = f"folder_path_{i}"
         label = f"Location {i}"
         handler = partial(on_click_select, f_key=key, getfolder=True)
