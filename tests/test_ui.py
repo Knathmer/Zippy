@@ -9,18 +9,18 @@ from PIL import Image
     ({'key1': 'value1'}, 'key1', 'new_value1', True),
     ({'key1': 'value1'}, 'key1', 'value1', False)  # No change expected
 ])
-def test_setpath(data, key, path, expected_modified, reset_is_modified):
+def test_setpath(data: dict, key: str, path: str, expected_modified: bool, reset_is_modified: pytest.fixture) -> None:
     ui.setpath(data, key, path)
     assert data[key] == path
     assert ui.isModified == expected_modified
 
-def test_setpath_non_existent():
+def test_setpath_non_existent() -> None:
     with pytest.raises(KeyError):
         ui.setpath({}, 'non_existent_key', 'some_path')
 
 """ get_folder tests """
 
-def test_get_folder(monkeypatch, tmp_path): #tmp_path is a pytest fixture for temporary directories
+def test_get_folder(monkeypatch: pytest.fixture, tmp_path: pytest.fixture) -> None: #tmp_path is a pytest fixture for temporary directories
     data = {"key1": "value1"}
     class DummyTk:
         def withdraw(self):
@@ -33,10 +33,10 @@ def test_get_folder(monkeypatch, tmp_path): #tmp_path is a pytest fixture for te
     ui.get_folder(data, "key1")
     assert data["key1"] == str(fake_folder)
 
-def test_get_folder_empty_selection(monkeypatch):
+def test_get_folder_empty_selection(monkeypatch: pytest.fixture) -> None:
     data = {"key1": "value1"}
     class DummyTk:
-        def withdraw(self):
+        def withdraw(self) -> None:
             pass
     monkeypatch.setattr(ui.tk, "Tk", DummyTk)
     monkeypatch.setattr(ui.filedialog, "askdirectory", lambda **kwargs: "")
@@ -46,10 +46,10 @@ def test_get_folder_empty_selection(monkeypatch):
 
 """ get_file tests """
 
-def test_get_file(monkeypatch, tmp_path):
+def test_get_file(monkeypatch: pytest.fixture, tmp_path: pytest.fixture) -> None:
     data = {"current_file": "old_file.rar"}
     class DummyTk:
-        def withdraw(self):
+        def withdraw(self) -> None:
             pass
     monkeypatch.setattr(ui.tk, "Tk", DummyTk)
     fake_file = tmp_path / 'fake_file.rar'
@@ -59,10 +59,10 @@ def test_get_file(monkeypatch, tmp_path):
     ui.get_file(data)
     assert data["current_file"] == str(fake_file)
 
-def test_get_file_empty_selection(monkeypatch):
+def test_get_file_empty_selection(monkeypatch: pytest.fixture) -> None:
     data = {"current_file": "old_file.rar"}
     class DummyTk:
-        def withdraw(self):
+        def withdraw(self) -> None:
             pass
     monkeypatch.setattr(ui.tk, "Tk", DummyTk)
     monkeypatch.setattr(ui.filedialog, "askopenfilename", lambda **kwargs: "")
@@ -73,12 +73,12 @@ def test_get_file_empty_selection(monkeypatch):
 """ create_tray tests """
 
 class DummyIcon:
-    def __init__(self, title, image, menu):
+    def __init__(self, title, image, menu) -> None:
         self.title = title
         self.image = image
         self.menu = menu
 
-def test_create_tray(monkeypatch, tmp_path):
+def test_create_tray(monkeypatch: pytest.fixture, tmp_path: pytest.fixture) -> None:
 
     # Mock settings.json loading
     monkeypatch.setattr(ui, "load", lambda: {

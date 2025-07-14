@@ -9,9 +9,10 @@ def main(run_in_thread=False):
     def create_and_run_icon():
         nonlocal icon
         icon = create_tray()
-        icon.run()  # Blocking call, runs the icon event loop
+        icon.run()
 
-    if not run_in_thread:
+    if not run_in_thread:  # For testing purposes
+
         create_and_run_icon()
         return True
     else:

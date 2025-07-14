@@ -12,6 +12,15 @@ import os
 isModified = False
 # Helper Functions
 
+def fetch_icon_path():
+    icon_path = os.path.join(
+        os.path.dirname(__file__),
+        "..",
+        "icons",
+        "zippy.png"
+    )
+    return icon_path
+
 def setpath(data, key, path):
             global isModified
             if key not in data:
@@ -60,13 +69,7 @@ def create_tray():
     data = load()
     number_of_locations = 6
     # icon_path set to location of the icon image
-    icon_path = os.path.join(
-        os.path.dirname(__file__),
-        "..",                     
-        "icons",
-        "zippy.png"
-    )
-    image = Image.open(icon_path)  # load the icon image
+    image = Image.open(fetch_icon_path())  # load the icon image
 
     # Build submenu items for "File Locations"
     loc_items = []

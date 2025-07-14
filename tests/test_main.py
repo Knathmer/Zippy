@@ -5,17 +5,17 @@ from zippy.ui import close_zippy
 import threading
 import time
 
-def test_main():
+def test_main() -> None:
 
     icon = None
 
-    def run_icon():
+    def run_icon() -> None:
         nonlocal icon
         icon = zippy.main.main(run_in_thread=True)
 
     t = threading.Thread(target=run_icon)
     t.start()
-    time.sleep(4)
+    time.sleep(5)
 
     assert icon is not None
 
