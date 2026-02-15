@@ -2,17 +2,17 @@
 from .ui import create_tray
 import threading
 import time as t
+from typing import Any
 
-def main(run_in_thread=False):
+def main(run_in_thread: bool = False) -> Any:
 
     icon = None
-    def create_and_run_icon():
+    def create_and_run_icon() -> None:
         nonlocal icon
         icon = create_tray()
         icon.run()
 
     if not run_in_thread:  # For testing purposes
-
         create_and_run_icon()
         return True
     else:

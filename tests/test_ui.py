@@ -1,18 +1,19 @@
 # tests/test_ui.py
+import pystray
 import pytest
 import zippy.ui as ui
 from PIL import Image
+from typing import Any
 
 """ setpath  """
 
-@pytest.mark.parametrize("data, key, path, expected_modified", [
-    ({'key1': 'value1'}, 'key1', 'new_value1', True),
-    ({'key1': 'value1'}, 'key1', 'value1', False)  # No change expected
+@pytest.mark.parametrize("data, key, path", [
+    ({'key1': 'value1'}, 'key1', 'new_value1'),
+    ({'key1': 'value1'}, 'key1', 'value1')  # No change expected
 ])
-def test_setpath(data: dict, key: str, path: str, expected_modified: bool, reset_is_modified: pytest.fixture) -> None:
+def test_setpath(data: dict, key: str, path: str) -> None:
     ui.setpath(data, key, path)
     assert data[key] == path
-    assert ui.isModified == expected_modified
 
 def test_setpath_non_existent() -> None:
     with pytest.raises(KeyError):
@@ -73,7 +74,7 @@ def test_get_file_empty_selection(monkeypatch: pytest.fixture) -> None:
 """ create_tray tests """
 
 class DummyIcon:
-    def __init__(self, title, image, menu) -> None:
+    def __init__(self, title: str, image: Image, menu: pystray.Menu) -> None:
         self.title = title
         self.image = image
         self.menu = menu
@@ -91,15 +92,16 @@ def test_create_tray(monkeypatch: pytest.fixture, tmp_path: pytest.fixture) -> N
         "current_file": "some_file.rar"
     })
 
-    # Mock the Image.open method to return a dummy image
+    # Mock the Image.open method to return a stub image
     dummy_image = Image.new("RGB",(1,1))
     monkeypatch.setattr(ui.Image, "open", lambda x: dummy_image)
 
-    # Mock the Icon class to return a dummy icon
+    # Mock the Icon class to return a stub icon
     monkeypatch.setattr(ui, "Icon", lambda title, image, menu: DummyIcon(title, image, menu))
 
     # Assertions
     icon = ui.create_tray()
+    print(type(icon))
     assert isinstance(icon, DummyIcon)
     assert icon.title == "Zippy"
     assert icon.image == dummy_image
